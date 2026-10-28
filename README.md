@@ -103,6 +103,7 @@ Simulación ESP32 en Wokwi: https://wokwi.com/projects/474167699552138241
 - [x] Unidad 2 — app Android con Compose y ViewModel, estructuras simuladas cada 3 s ([app-android](app-android/))
 - [x] Unidad 2 — la app envía las lecturas a Firebase Realtime Database y muestra lo que hay guardado
 - [x] Unidad 2 — proyecto Firebase creado (`monitor-estructural`) y base de datos documentada en el Informe Formativa U2
-- [ ] Unidad 2 — agregar el inicio de sesión y reglas con `auth != null`
+- [x] Unidad 2 — Login (Firebase Authentication), pantallas Activador y Monitoreo, y reglas que exigen sesión
+- [ ] Unidad 2 — pruebas con dos celulares (tabla 11.3 del Informe Formativa U2)
 - [ ] Unidad 3 — integración app ↔ nodos
 - [ ] Unidad 4 — informe final
