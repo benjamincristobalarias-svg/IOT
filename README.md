@@ -50,9 +50,9 @@ firmware/
 simulacion/
   wokwi_uno/                                 Proyecto Wokwi del Uno (diagram.json + sketch)
   wokwi_esp32/                               Sketch de un nodo ESP32 completo
-app-android/                                 App Android Unidad 2 (Kotlin + Compose, según la guía del profe)
+app-android/                                 App Android Unidad 2 (Kotlin + Compose + Firebase)
 docs/
-  app/                                       Cómo ejecutar la app, seguridad y pruebas
+  app/                                       Firebase, cómo ejecutar la app, seguridad y pruebas
   informes/                                  EF1, ES1 e Informe Unidad 2
   mockup/                                    Propuestas de pantallas de la app
   guias/                                     Armado, verificación, materiales y chuleta
@@ -101,6 +101,7 @@ Simulación ESP32 en Wokwi: https://wokwi.com/projects/474167699552138241
 - [x] Informe Unidad 2 con todas las actualizaciones
 - [ ] Verificación física del enlace Bluetooth entre dos ESP32
 - [x] Unidad 2 — app Android con Compose y ViewModel, estructuras simuladas cada 3 s ([app-android](app-android/))
-- [ ] Unidad 2 — conectar la app con Firebase (siguiente guía del profe) y probar en dos celulares
+- [x] Unidad 2 — la app envía las lecturas a Firebase Realtime Database y muestra lo que hay guardado
+- [ ] Unidad 2 — probar con el proyecto Firebase y agregar el inicio de sesión
 - [ ] Unidad 3 — integración app ↔ nodos
 - [ ] Unidad 4 — informe final
