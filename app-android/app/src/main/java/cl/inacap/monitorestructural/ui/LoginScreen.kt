@@ -9,10 +9,10 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -25,12 +25,12 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 
-// Pantalla de Login: correo (usuario) y contraseña con Firebase Authentication
+// Pantalla de Login: correo y contraseña con Firebase Authentication
 @Composable
 fun LoginScreen(
     state: LoginUiState,
     onIngresar: (correo: String, clave: String) -> Unit,
-    onCrearCuenta: (correo: String, clave: String) -> Unit
+    onIrARegistro: () -> Unit
 ) {
     var correo by rememberSaveable { mutableStateOf("") }
     // La contraseña solo vive en memoria mientras se escribe (no se guarda)
@@ -50,7 +50,7 @@ fun LoginScreen(
             OutlinedTextField(
                 value = correo,
                 onValueChange = { correo = it },
-                label = { Text("Correo (usuario)") },
+                label = { Text("Correo") },
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                 modifier = Modifier.fillMaxWidth()
@@ -77,12 +77,8 @@ fun LoginScreen(
             ) {
                 Text("Ingresar")
             }
-            OutlinedButton(
-                onClick = { onCrearCuenta(correo, clave) },
-                enabled = !state.cargando,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text("Crear cuenta")
+            TextButton(onClick = onIrARegistro, enabled = !state.cargando) {
+                Text("¿No tienes cuenta? Regístrate")
             }
         }
     }

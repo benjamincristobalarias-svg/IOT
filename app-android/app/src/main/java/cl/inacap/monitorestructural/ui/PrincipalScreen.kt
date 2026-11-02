@@ -38,7 +38,7 @@ fun PrincipalScreen(
                     Column {
                         Text("Monitor Estructural")
                         Text(
-                            "$usuario · " + (if (conectado) "Conectado a Firebase" else "Sin conexión"),
+                            "Hola, $usuario · " + (if (conectado) "Conectado a Firebase" else "Sin conexión"),
                             style = MaterialTheme.typography.bodySmall,
                             color = if (conectado) MaterialTheme.colorScheme.primary
                             else MaterialTheme.colorScheme.error
