@@ -18,7 +18,7 @@ Si hubiera que crear todo de nuevo: Crear proyecto (sin Analytics) → Realtime 
 2. Copiar `google-services.json` dentro de **`app-android/app/`**.
 3. Android Studio → **Open** → carpeta **`app-android`** (no la raíz del repo) → esperar el **Gradle Sync**.
 4. Elegir un emulador o un celular **con internet** y apretar **▶ Run**.
-5. La primera vez: correo + contraseña (mínimo 8 caracteres) → **Crear cuenta**. Las cuentas quedan en Firebase → Authentication → Usuarios.
+5. La primera vez: **¿No tienes cuenta? Regístrate** → nombre de usuario, correo, contraseña (mínimo 8 caracteres) y confirmar contraseña → **Crear cuenta**. La app entra sola y saluda con "Hola, *nombre*". Las cuentas quedan en Firebase → Authentication → Usuarios.
 
 ## 3. Dos celulares
 
@@ -30,6 +30,8 @@ Si hubiera que crear todo de nuevo: Crear proyecto (sin Analytics) → Realtime 
 | Acción | Qué se ve |
 |---|---|
 | Abrir la app sin sesión | Solo el Login |
+| Registro con contraseñas distintas | "Las contraseñas no coinciden" y no crea la cuenta |
+| Registro con datos correctos | Entra a la app y arriba dice "Hola, *nombre*" |
 | Contraseña mala | "Correo o contraseña incorrectos" y no entra |
 | A: Edificio B, frecuencia 30 Hz, Enviar | B: Edificio B en rojo "Daño", caída 14,3 %. A: "Firebase confirmó en ... ms" |
 | A: amplitud sobre 230.000 con frecuencia normal | B: amarillo "Vibración fuerte (sismo)" |

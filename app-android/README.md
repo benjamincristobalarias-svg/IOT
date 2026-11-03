@@ -4,7 +4,8 @@ App hecha siguiendo la guía del profe (**GUIAAPPKOTLIN**) y su **Ejemplo02**: A
 
 | Pantalla | Qué hace |
 |---|---|
-| **Login** | Correo y contraseña con Firebase Authentication (Ingresar / Crear cuenta) |
+| **Login** | Correo y contraseña con Firebase Authentication |
+| **Registro** | Nombre de usuario, correo, contraseña y confirmar contraseña. El nombre se guarda en Firebase y la app saluda con "Hola, *nombre*" |
 | **Activador** | Hace de sensor: estructura (RadioButton), frecuencia y amplitud (Slider), sensor conectado (Switch) y botón **Enviar a Firebase**. Tiene envío automático (simulador cada 3 s) y muestra cuántos envíos confirmó Firebase y en cuántos ms |
 | **Monitoreo** | Muestra en vivo lo que hay en Firebase: una tarjeta por estructura con frecuencia, línea base, caída y estado |
 
@@ -16,7 +17,7 @@ Con dos celulares: uno en **Activador** y el otro en **Monitoreo**. Los datos pa
 2. Copiarlo dentro de **`app-android/app/`**. No se sube al repo.
 3. Android Studio → **Open** → carpeta **`app-android`** → esperar el **Gradle Sync**.
 4. **▶ Run** en un emulador o celular con internet.
-5. La primera vez: escribir un correo y una contraseña (mínimo 8 caracteres) y apretar **Crear cuenta**.
+5. La primera vez: **¿No tienes cuenta? Regístrate** → nombre de usuario, correo, contraseña (mínimo 8 caracteres) y confirmarla → **Crear cuenta**.
 
 ## Organización (igual que la guía)
 
@@ -24,12 +25,13 @@ Con dos celulares: uno en **Activador** y el otro en **Monitoreo**. Los datos pa
 app/src/main/java/cl/inacap/monitorestructural/
     MainActivity.kt                        crea repositorios y ViewModels; muestra Login o la app según la sesión
     model/Estructura.kt                    estructura y lectura; daño, sismo, estructuras instaladas
-    model/Credenciales.kt                  revisa correo y contraseña antes de enviarlos
-    data/AuthRepository.kt                 login, crear cuenta y salir (Firebase Authentication)
+    model/Credenciales.kt                  revisa correo, contraseña y datos del registro antes de enviarlos
+    data/AuthRepository.kt                 login, crear cuenta con nombre de usuario y salir (Firebase Authentication)
     data/EstructurasRepository.kt          contrato de la fuente de datos
     data/FakeEstructurasRepository.kt      simulador del envío automático (Flow cada 3 s)
     data/FirebaseEstructurasRepository.kt  enviar(), escuchar la base (callbackFlow) y la conexión
     ui/LoginScreen.kt + LoginViewModel.kt
+    ui/RegistroScreen.kt                   crear cuenta (usa el mismo LoginViewModel)
     ui/ActivadorScreen.kt + ActivadorViewModel.kt
     ui/MonitoreoScreen.kt + EstructurasViewModel.kt
     ui/PrincipalScreen.kt                  barra superior y pestañas Monitoreo / Activador
@@ -58,4 +60,4 @@ Reglas ([`firebase/database.rules.json`](firebase/database.rules.json)): solo co
 
 ## Pruebas
 
-`SimulacionTest.kt` y `LoginYActivadorTest.kt` (11 pruebas): reglas de daño y sismo, simulador, revisión de correo y contraseña, y la lectura que arma el Activador. Se ejecutan en Android Studio con el botón ▶ junto a cada clase.
+`SimulacionTest.kt` y `LoginYActivadorTest.kt` (15 pruebas): reglas de daño y sismo, simulador, revisión de correo y contraseña, registro (nombre, contraseña corta, contraseñas distintas) y la lectura que arma el Activador. Se ejecutan en Android Studio con el botón ▶ junto a cada clase.

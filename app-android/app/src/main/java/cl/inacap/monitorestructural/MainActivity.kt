@@ -4,7 +4,11 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.initializer
@@ -20,6 +24,7 @@ import cl.inacap.monitorestructural.ui.LoginScreen
 import cl.inacap.monitorestructural.ui.LoginViewModel
 import cl.inacap.monitorestructural.ui.MonitoreoScreen
 import cl.inacap.monitorestructural.ui.PrincipalScreen
+import cl.inacap.monitorestructural.ui.RegistroScreen
 import cl.inacap.monitorestructural.ui.theme.MonitorEstructuralTheme
 
 class MainActivity : ComponentActivity() {
@@ -49,13 +54,31 @@ class MainActivity : ComponentActivity() {
             MonitorEstructuralTheme {
                 val sesion by loginViewModel.uiState.collectAsStateWithLifecycle()
                 val usuario = sesion.usuario
+                // true = se muestra Registro; false = Login
+                var registrando by rememberSaveable { mutableStateOf(false) }
+                // Cuando entra a la app se olvida el Registro: al cerrar sesión vuelve al Login
+                LaunchedEffect(usuario) { if (usuario != null) registrando = false }
                 if (usuario == null) {
-                    // Sin sesión solo se ve el Login
-                    LoginScreen(
-                        state = sesion,
-                        onIngresar = loginViewModel::ingresar,
-                        onCrearCuenta = loginViewModel::crearCuenta
-                    )
+                    // Sin sesión solo se ven Login y Registro
+                    if (registrando) {
+                        RegistroScreen(
+                            state = sesion,
+                            onCrearCuenta = loginViewModel::crearCuenta,
+                            onVolver = {
+                                loginViewModel.limpiarError()
+                                registrando = false
+                            }
+                        )
+                    } else {
+                        LoginScreen(
+                            state = sesion,
+                            onIngresar = loginViewModel::ingresar,
+                            onIrARegistro = {
+                                loginViewModel.limpiarError()
+                                registrando = true
+                            }
+                        )
+                    }
                 } else {
                     val conectado by monitoreoViewModel.conectado.collectAsStateWithLifecycle()
                     PrincipalScreen(

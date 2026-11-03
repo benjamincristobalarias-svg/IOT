@@ -5,12 +5,13 @@
 | Medida | Cómo está en la app | Control |
 |---|---|---|
 | Control de acceso | Login obligatorio y reglas `auth != null` | 5.15, 8.3 |
-| Autenticación segura | Firebase Authentication; contraseña oculta; mínimo 8 caracteres al crear cuenta; mismo mensaje si falla el correo o la contraseña | 8.5 |
+| Autenticación segura | Firebase Authentication; contraseña oculta; registro con nombre de usuario, mínimo 8 caracteres y confirmar contraseña; mismo mensaje si falla el correo o la contraseña | 8.5 |
 | Credenciales protegidas | La app no guarda la contraseña; Firebase la guarda cifrada (hash) | 5.17 |
-| Cifrado en tránsito | HTTPS/TLS entre la app y Firebase | 8.24 |
+| Cifrado en tránsito | HTTPS/TLS entre la app y Firebase; `network_security_config.xml` bloquea cualquier conexión sin cifrar (HTTP) | 8.24 |
+| Protección de datos en el celular | `allowBackup="false"` y reglas de extracción: la sesión no se copia a respaldos en la nube ni a otro celular | 8.10, 8.12 |
 | Integridad de los datos | Reglas que validan tipos y rangos (0–100 Hz) y rechazan campos desconocidos | 8.26 |
 | Registro de eventos | `historial` guarda cada lectura con el UID de quien la envió; no se puede modificar ni borrar desde la app | 8.15 |
-| Mínimo privilegio | Solo el permiso INTERNET y solo dos ramas de la base; `google-services.json` fuera del repo | 8.3 |
+| Mínimo privilegio | Solo los permisos INTERNET y ACCESS_NETWORK_STATE (sin Bluetooth ni ubicación) y solo dos ramas de la base; `google-services.json` fuera del repo | 8.3 |
 
 ## Lineamientos OT (base: IEC 62443)
 
@@ -23,7 +24,7 @@
 
 ## Pruebas
 
-- **11 pruebas automáticas** (`SimulacionTest.kt`, `LoginYActivadorTest.kt`): pasaron todas.
+- **15 pruebas automáticas** (`SimulacionTest.kt`, `LoginYActivadorTest.kt`): reglas de daño y sismo, simulador, login, registro (nombre vacío, contraseña corta, contraseñas distintas, datos correctos) y Activador. Pasaron todas.
 - **6 pruebas de reglas** en la Zona de pruebas de reglas de Firebase: lectura sin sesión rechazada, lectura con sesión autorizada, 500 Hz rechazado, 30 Hz autorizado, historial a nombre de otro usuario rechazado, historial a nombre propio autorizado.
 - **Pruebas con dos celulares** (WiFi, datos móviles, sin internet, envío automático, sensor desconectado, contraseña incorrecta): se muestran en la demostración en clase.
 
