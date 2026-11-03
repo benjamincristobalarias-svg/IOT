@@ -1,21 +1,30 @@
 # Resultado de la prueba: pantalla de Registro (registro.patch)
 
 Rama: `claude/prueba-registro-iot-9o0keg`, creada desde `main` (6228b67).
-Probado en una sesión de Claude Code en la nube (Linux, JDK 21), **no** en un PC con Android Studio.
+Probado en una sesión de Claude Code en la nube (Linux), **no** en un PC con Android Studio.
 
-## 1. Aplicar el patch
+## Resumen
 
-`git am registro.patch` → se aplicó sin conflictos (commit 35f247a). No hubo que corregir nada.
+| Paso | Resultado |
+|---|---|
+| `git am registro.patch` | Se aplicó sin conflictos |
+| `gradlew testDebugUnitTest` | **BUILD SUCCESSFUL**: 16 pruebas, 0 fallas |
+| `gradlew assembleDebug` | **BUILD SUCCESSFUL**: `app-debug.apk` (14,9 MB) |
+| Correcciones al código | Ninguna |
+| Pruebas en celular / emulador | No se hicieron (pendientes) |
 
-## 2. `gradlew testDebugUnitTest` y `gradlew assembleDebug`
+## 1. Entorno usado
 
-**No se pudieron ejecutar.** La red de este entorno bloquea `dl.google.com`
-(`CONNECT tunnel failed, response 403`), que es de donde se descargan el Android SDK,
-el Android Gradle Plugin, androidx y Firebase. Tampoco había `google-services.json`.
+- Android SDK instalado con `sdkmanager`: `platforms;android-37.0`, `build-tools;37.0.0`, `platform-tools`.
+- Gradle 9.6.0 (el wrapper del repo), Android Gradle Plugin 9.4.1, Kotlin 2.3.21.
+- Java 25: `gradle/gradle-daemon-jvm.properties` pide Java 25 y lo descarga de `api.foojay.io`,
+  que estaba bloqueado en la nube. Se instaló `openjdk-25-jdk-headless` con apt. **En el PC no hace falta**:
+  Android Studio lo descarga solo.
+- `google-services.json` **de relleno** (paquete `cl.inacap.monitorestructural`, claves falsas), solo para
+  que compile. No se subió (está en `.gitignore`). El APK generado no se conecta a Firebase.
+- Maven Central respondió dos veces "429 Too Many Requests"; se reintentó y pasó. No es un problema del proyecto.
 
-En su lugar, las pruebas unitarias (que solo usan Kotlin puro) se corrieron en un proyecto
-Gradle JVM aparte (Kotlin 2.3.21, kotlinx-coroutines, JUnit 4.13.2) con los mismos archivos:
-`model/*.kt`, `data/EstructurasRepository.kt`, `data/FakeEstructurasRepository.kt` y `src/test`.
+## 2. `gradlew testDebugUnitTest`
 
 | Clase | Pruebas | Fallas |
 |---|---|---|
@@ -27,18 +36,84 @@ Las 4 pruebas nuevas del registro pasaron: `registro_datosCorrectos_sinError`,
 `registro_contrasenasDistintas_muestraError`, `registro_nombreVacio_muestraError`,
 `registro_contrasenaCorta_muestraError`.
 
-Las pantallas (Compose), `AuthRepository` (Firebase) y el Manifest **no se compilaron**.
-Se revisaron a mano: imports, firmas y llamadas entre `MainActivity`, `LoginScreen`,
-`RegistroScreen`, `LoginViewModel` y `AuthRepository` coinciden. Queda pendiente
-correr `gradlew assembleDebug` en Android Studio.
+Salida (sin las tareas UP-TO-DATE):
 
-## 3. Cambios para corregir errores
+```text
+> Task :app:generateDebugResources
+> Task :app:processDebugGoogleServices
+> Task :app:javaPreCompileDebugUnitTest
+> Task :app:javaPreCompileDebug
+> Task :app:mapDebugSourceSetPaths
+> Task :app:packageDebugResources
+> Task :app:createDebugCompatibleScreenManifests
+> Task :app:extractDeepLinksDebug
+> Task :app:processDebugNavigationResources
+> Task :app:checkDebugAarMetadata
+> Task :app:compileDebugNavigationResources
+> Task :app:processDebugMainManifest
+> Task :app:processDebugManifest
+> Task :app:processDebugManifestForPackage
+> Task :app:parseDebugLocalResources
+> Task :app:generateDebugRFile
+> Task :app:mergeDebugResources
+> Task :app:processDebugResources
+> Task :app:compileDebugKotlin
+> Task :app:processDebugJavaRes
+> Task :app:bundleDebugClassesToCompileJar
+> Task :app:bundleDebugClassesToRuntimeJar
+> Task :app:compileDebugUnitTestKotlin
+> Task :app:processDebugUnitTestJavaRes
+> Task :app:testDebugUnitTest
+BUILD SUCCESSFUL in 46s
+25 actionable tasks: 25 executed
+```
 
-Ninguno.
+## 3. `gradlew assembleDebug`
 
-## 4. Pruebas en el celular / emulador
+```text
+> Task :app:mergeDebugAssets
+> Task :app:compressDebugAssets
+> Task :app:desugarDebugFileDependencies
+> Task :app:mergeDebugJavaResource
+> Task :app:checkDebugDuplicateClasses
+> Task :app:mergeDebugJniLibFolders
+> Task :app:generateDebugGlobalSynthetics
+> Task :app:mergeDebugNativeLibs
+> Task :app:mergeLibDexDebug
+> Task :app:stripDebugDebugSymbols
+Unable to strip the following libraries, packaging them as they are: libandroidx.graphics.path.so, libdatastore_shared_counter.so. Run with --info option to learn more.
+> Task :app:writeDebugAppMetadata
+> Task :app:writeDebugSigningConfigVersions
+> Task :app:dexBuilderDebug
+> Task :app:mergeProjectDexDebug
+> Task :app:validateSigningDebug
+> Task :app:mergeExtDexDebug
+> Task :app:packageDebug
+> Task :app:assembleDebug
+> Task :app:createDebugApkListingFileRedirect
+BUILD SUCCESSFUL in 1m 9s
+37 actionable tasks: 18 executed, 19 up-to-date
+```
 
-No se hicieron (no hay emulador ni SDK en este entorno). Pendientes en el PC:
+El aviso "Unable to strip the following libraries" es normal en un build debug y no es un error.
+No hubo advertencias del compilador de Kotlin.
+
+### Revisión del Manifest final del APK
+
+- `allowBackup=false`, `dataExtractionRules`, `fullBackupContent` y `networkSecurityConfig`: presentes.
+- Permisos: `INTERNET`, `ACCESS_NETWORK_STATE` y además
+  `com.google.android.providers.gsf.permission.READ_GSERVICES` y `DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION`.
+  Estos dos últimos los agregan las librerías de Firebase / AndroidX, no la app. Ojo: `docs/app/seguridad_y_pruebas.md`
+  dice "Solo los permisos INTERNET y ACCESS_NETWORK_STATE"; conviene precisar que son los que pide la app.
+
+## 4. Cambios para corregir errores
+
+Ninguno. El patch compiló y pasó las pruebas tal como venía.
+
+## 5. Pruebas en el celular / emulador
+
+No se hicieron: la máquina en la nube no puede correr el emulador de Android (sin KVM) y no hay celular conectado.
+Además el APK compilado aquí usa un `google-services.json` falso. Hay que hacerlas en Android Studio con el archivo real:
 
 | Prueba | Esperado | Resultado |
 |---|---|---|
